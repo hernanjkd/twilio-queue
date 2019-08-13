@@ -2,11 +2,12 @@ class Queeue:
 
     def __init__(self):
         self._queeue = []
-        self.numbers = []
 
     def enqueue(self, name, number):
-        self._queeue.append(name)
-        self.numbers.append(number)
+        self._queeue.append({
+            "name": name,
+            "number": number
+        })
 
     def dequeue(self):
         return {
