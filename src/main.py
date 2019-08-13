@@ -18,6 +18,8 @@ MIGRATE = Migrate(app, db)
 db.init_app(app)
 CORS(app)
 
+q = Queeue()
+
 @app.errorhandler(APIException)
 def handle_invalid_usage(error):
     return jsonify(error.to_dict()), error.status_code
@@ -28,7 +30,7 @@ def sitemap():
 
 
 @app.route("/sms", methods=['GET', 'POST'])
-def sms_ahoy_reply():
+def sms():
     """Respond to incoming messages with a friendly SMS."""
     # Start our response
     resp = MessagingResponse()
@@ -39,8 +41,21 @@ def sms_ahoy_reply():
     return str(resp)
 
 
+@app.route("/new", methods=['POST'])
+def add_person():
+    body = request.get_json()
+
+    q.enqueue(body['name'], body['number'])
+
+    return "ok", 200
+
+
+@app.route('/all', methods=['GET'])
+def get_all():
+    return jsonify(q)
+
+
+
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3000))
     app.run(host='0.0.0.0', port=PORT)
-
-print("hello")
