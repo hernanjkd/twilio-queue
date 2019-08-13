@@ -48,7 +48,7 @@ def add_person():
 
 @app.route('/all', methods=['GET'])
 def get_all():
-    return jsonify(q)
+    return jsonify(q.get_queue())
 
 
 

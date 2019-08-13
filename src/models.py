@@ -14,5 +14,5 @@ class Queeue:
             "number": self._queeue.pop(0)
         }
 
-    def __repr__(self):
-       return (self._queeue)
+    def get_queue(self):
+       return self._queeue
