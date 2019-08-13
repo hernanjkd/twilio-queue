@@ -7,7 +7,7 @@ from flask_migrate import Migrate
 from flask_swagger import swagger
 from flask_cors import CORS
 from utils import APIException, generate_sitemap
-from models import db, Person
+from models import db, Queeue
 from twilio.twiml.messaging_response import MessagingResponse
 
 app = Flask(__name__)
@@ -26,7 +26,7 @@ def handle_invalid_usage(error):
 def sitemap():
     return generate_sitemap(app)
 
-    
+
 @app.route("/sms", methods=['GET', 'POST'])
 def sms_ahoy_reply():
     """Respond to incoming messages with a friendly SMS."""
@@ -42,3 +42,5 @@ def sms_ahoy_reply():
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3000))
     app.run(host='0.0.0.0', port=PORT)
+
+print("hello")
