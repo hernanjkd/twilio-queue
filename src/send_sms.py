@@ -13,7 +13,7 @@ def send_msg(number, msg):
                     .create(
                         body=msg,
                         from_='+17544659472',
-                        to=number
+                        to=''
                     )
 
     print(message.sid)

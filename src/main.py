@@ -35,7 +35,7 @@ def sms():
     # Unable to create record: The number  is unverified. Trial accounts cannot send messages to
     # unverified numbers; verify  at twilio.com/user/account/phone-numbers/verified, or purchase a
     # Twilio number to send messages to unverified numbers.
-    send_msg(3059511070, 'Hello ' + name + ', you are now on the waiting list.')
+    send_msg(number, 'Hello ' + name + ', you are now on the waiting list.')
 
     return 'ok', 200
 
@@ -46,7 +46,7 @@ def add_person():
 
     q.enqueue(body['name'], body['number'])
 
-    send_msg(3059511070, body['name'] + ", you are in queeue, we'll let you know when you are next.")
+    send_msg(body['number'], body['name'] + ", you are in queeue, we'll let you know when you are next.")
 
     return jsonify(q.get_queue()), 200
 
@@ -59,7 +59,7 @@ def get_all():
 def process():
     person = q.dequeue()
 
-    send_msg(3059511070, person['name'] + ', you are next.')
+    send_msg(person['number'], person['name'] + ', you are next.')
 
     return 'ok', 200
 
