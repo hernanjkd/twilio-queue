@@ -3,11 +3,10 @@ This module takes care of starting the API Server, Loading the DB and Adding the
 """
 import os
 from flask import Flask, request, jsonify, url_for
-from flask_migrate import Migrate
-from flask_swagger import swagger
 from flask_cors import CORS
 from utils import APIException, generate_sitemap
 from models import Queeue
+from send_sms import send_msg
 from twilio.twiml.messaging_response import MessagingResponse
 
 app = Flask(__name__)
@@ -27,14 +26,18 @@ def sitemap():
 
 @app.route("/sms", methods=['GET', 'POST'])
 def sms():
-    """Respond to incoming messages with a friendly SMS."""
-    # Start our response
-    resp = MessagingResponse()
 
-    # Add a message
-    resp.message("Ahoy! Thanks so much for your message.")
+    name = request.form['Body']
+    number = request.form['From']
 
-    return str(resp)
+    q.enqueue(name, number)
+
+    # Unable to create record: The number  is unverified. Trial accounts cannot send messages to
+    # unverified numbers; verify  at twilio.com/user/account/phone-numbers/verified, or purchase a
+    # Twilio number to send messages to unverified numbers.
+    send_msg(3059511070, 'Hello ' + name + ', you are now on the waiting list.')
+
+    return 'ok', 200
 
 
 @app.route("/new", methods=['POST'])
@@ -43,13 +46,22 @@ def add_person():
 
     q.enqueue(body['name'], body['number'])
 
-    return "ok", 200
+    send_msg(3059511070, body['name'] + ", you are in queeue, we'll let you know when you are next.")
+
+    return jsonify(q.get_queue()), 200
 
 
 @app.route('/all', methods=['GET'])
 def get_all():
     return jsonify(q.get_queue())
 
+@app.route('/next')
+def process():
+    person = q.dequeue()
+
+    send_msg(3059511070, person['name'] + ', you are next.')
+
+    return 'ok', 200
 
 
 if __name__ == '__main__':
