@@ -10,10 +10,7 @@ class Queeue:
         })
 
     def dequeue(self):
-        return {
-            "name": self._queeue.pop(0),
-            "number": self._queeue.pop(0)
-        }
+        return self._queeue.pop(0)
 
     def get_queue(self):
        return self._queeue
